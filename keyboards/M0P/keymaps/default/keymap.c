@@ -19,6 +19,7 @@
 // Defines the keycodes used by our macros in process_record_user
 enum my_keycodes {
   KEY_LCK = SAFE_RANGE,
+  KEY_ACC
 };
 
 enum unicode_names {
@@ -138,17 +139,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            _______,    UN_SECT,   UN_MICR,     XXXXXXX,     UN_DIVI,   XXXXXXX,   UN_ACLI,   UN_ACLO,     UN_UPQU,  _______, \
            _______,    _______,   UN_LSEQ,     UN_GREQ,     UN_MULT,   UN_TILN,   UN_ACLA,   UN_ACLE,     _______,  _______, \
            _______,    _______,   XXXXXXX,     XXXXXXX,     UN_PLMN,   XXXXXXX,   XXXXXXX,   XXXXXXX,     _______,  _______, \
-          TT(_SM2),    _______,   UN_TRMK,     UN_REST,     UN_COPY,   XXXXXXX,   UN_APRX,   UN_UNEQ,     _______, TT(_SM2),\
+           _______,    _______,   UN_TRMK,     UN_REST,     UN_COPY,   XXXXXXX,   UN_APRX,   UN_UNEQ,     _______,  _______, \
                                                               _______                                                        \
           ),
-          [_SM2] = LAYOUT( /*UNICODE (UPPER CASE) */
-             _______,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   UN_ACCU,   UN_ACCY,     XXXXXXX,  _______, \
-             _______,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   UN_ACCI,   UN_ACCO,     XXXXXXX,  _______, \
-             _______,    _______,   XXXXXXX,     XXXXXXX,     XXXXXXX,   UN_TLCN,   UN_ACCA,   UN_ACCE,     _______,  _______, \
-             _______,    _______,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     _______,  _______, \
-             _______,    _______,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     _______,  _______, \
-                                                                _______                                                        \
-            ),
+        [_ACC] = LAYOUT( /*Numbers and Symbols*/
+           XXXXXXX,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     XXXXXXX,  XXXXXXX, \
+           XXXXXXX,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     XXXXXXX,  XXXXXXX, \
+           XXXXXXX,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     XXXXXXX,  XXXXXXX, \
+           XXXXXXX,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     XXXXXXX,  XXXXXXX, \
+           XXXXXXX,    XXXXXXX,   XXXXXXX,     XXXXXXX,     XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,     XXXXXXX,  XXXXXXX, \
+                                                              KEY_ACC                                                        \
+          ),
       [_ACT] = LAYOUT( /* Action - */
            _______,   KEY_LCK,   XXXXXXX,   XXXXXXX,    KC_BRK,   KC_PSCR,    XXXXXXX,  KC_VOLU,    KC_VOLD,   _______, \
            _______,   _______,    KC_INS,   KC_HOME,   KC_PGUP,   XXXXXXX,     KC_UP,   XXXXXXX,    KC_MUTE,   _______, \
@@ -169,36 +170,161 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             */
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case QMKBEST:
-            if (record->event.pressed) {
-                // when keycode QMKBEST is pressed
-                SEND_STRING("QMK is the best thing ever!");
-            } else {
-                // when keycode QMKBEST is released
-            }
-            break;
-        case QMKURL:
-            if (record->event.pressed) {
-                // when keycode QMKURL is pressed
-                SEND_STRING("https://qmk.fm/" SS_TAP(X_ENTER));
-            } else {
-                // when keycode QMKURL is released
-            }
-            break;
+void keyboard_pre_init_user(void) {
+  // Call the keyboard pre init code.
+
+  // Set our LED pins as output
+  //setPinOutput(D7);  //Blue (#1 - going L to R)
+  //setPinOutput(B5);  //Red (#2)
+  //setPinOutput(B6);  //Green #3)
+  setPinOutput(B4);  //White (#4)
+  //setPinOutput(D5);  //YellowGreen (#5)
+  //setPinOutput(C7);  //Yellow (#6)
+}
+
+
+
+
+void led_set_user(uint8_t usb_led) {
+    if (IS_LED_ON(usb_led, USB_LED_CAPS_LOCK)) {
+        writePinHigh(B4);
+    } else {
+        writePinLow(B4);
     }
-    return true;
+}
+
+
+
+
+const uint16_t PROGMEM fn_actions[] = {
+    [0] = ACTION_MODS_TAP_KEY(MOD_LSFT, KC_CAPS),
+    [1] = ACTION_MODS_TAP_KEY(MOD_RSFT, KC_CAPS)
+};
+void led_set_keymap(uint8_t usb_led) {
+  if (!(usb_led & (1<<USB_LED_NUM_LOCK))) {
+    register_code(KC_NUMLOCK);
+    unregister_code(KC_NUMLOCK);
+  }
 }
 
 void matrix_init_user(void) {
-
+  DDRD |= (1 << PD7); //init D7 (Blue)
+  PORTD &= ~(1<<PD7); //turn off D7
+  DDRB |= (1 << PB5); //init B5 (Red)
+  PORTB &= ~(1<<PB1); //turn off B5
+  DDRB |= (1 << PB6); //init B6 (Green)
+  PORTB &= ~(1<<PB6); //turnoff B6
+  DDRD |= (1 << PD5); //init D5 (Yellow Green)
+  PORTD &= ~(1<<PD5); //turn off D5
+  DDRC |= (1 << PC7); //init C7 (Yellow)
+  PORTC &= ~(1<<PC7); //turnoff C7
 }
 
-void matrix_scan_user(void) {
+uint32_t layer_state_set_user(uint32_t state)
+{
 
+  // if on layer _NAS, turn on D7 LED, otherwise off.
+    if (biton32(state) == _NAS || biton32(state) ==_NS2) {
+        PORTD |= (1<<PD7);
+    } else {
+        PORTD &= ~(1<<PD7);
+    }
+
+
+  // if on layer _ACT, turn on B5 LED, otherwise off.
+    if (biton32(state) == _ACT) {
+        PORTB |= (1<<PB5);
+    } else {
+        PORTB &= ~(1<<PB5);
+    }
+
+  // if on layer _NUM, turn on B5 LED, otherwise off.
+    if (biton32(state) == _GUI) {
+        PORTB |= (1<<PB6);
+    } else {
+        PORTB &= ~(1<<PB6);
+    }
+
+
+  return state;
 }
 
-void led_set_user(uint8_t usb_led) {
+//Lock Key Functionality
 
+void BeginLock(void)
+{
+  lock_active = true;
+  lock_searching = true;
+  PORTD |= (1<<PD5);
+}
+
+void LockKey(uint16_t keycode)
+{
+  locked_key = keycode;
+  register_code(keycode);
+  lock_searching = false;
+  PORTD &= ~(1<<PD5);
+  PORTC |= (1 << PC7);
+}
+void EndLock(uint16_t keycode)
+{
+  lock_active = false;
+  unregister_code(keycode);
+  locked_key = 0;
+  PORTD &= ~(1<<PD5);
+  PORTC &= ~(1<<PD7);
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record)
+{
+  uprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
+
+  if (keycode==KEY_ACC)
+  {
+    /* code */
+  }
+  else if(keycode == KEY_LCK) // lock key is pressed.
+  {
+    if(record->event.pressed == 1) //Do nothing special on key down
+    {
+      return true;
+    }
+    else //On key up, toggle on/off
+    {
+      if(lock_active == true) //If lock is active then turn off
+      {
+        EndLock(locked_key);
+        return false;
+      }
+      else //if lock off, turn on
+      {
+        BeginLock();
+        return false;
+      }
+    }
+  }
+  else if(lock_active == true) //Lock is active, need to execute steps that don't involve lock key
+  {
+    if(lock_searching == true && keycode <0xFF && record->event.pressed == 0 )
+    //Lock key pressed, which turned on search.  Key needs to be valid.  On key up, set as locked key
+    {
+        LockKey(keycode);
+
+        return false;
+    }
+    else if (lock_searching == false && keycode == locked_key) //if the key has already been set, ignore the button press
+    {
+      return false;
+    }
+    //if searching is false or its a quantum key, then continie on.
+         //if the locked key has already been set, a normal button push will add to the effect
+    else
+    {
+      return true;
+    }
+  }
+  else //Non-lock related keypresses
+  {
+    return true;
+  }
 }

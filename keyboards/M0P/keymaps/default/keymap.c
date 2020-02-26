@@ -117,23 +117,14 @@ const uint32_t PROGMEM unicode_map[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BAS] = LAYOUT( /*  Base */
-      KC_ESC,        KY_COLN,      KC_Q,     KC_W,      KC_B,      KC_M,      KC_U,       KC_Y,        KY_EXCL,   KC_BSPC, \
-      KC_TAB,        KY_SCOL,      KC_D,     KC_L,      KC_R,      KC_H,      KC_I,       KC_O,        KY_QUES,    KC_ENT, \
-     KC_LGUI,       TT(_ACT),      KC_T,     KC_F,      KC_S,      KC_N,      KC_A,       KC_E,       TT(_ACT),   KC_RGUI, \
-     KC_LALT,       TT(_NAS),      KC_K,     KC_P,      KC_J,      KC_G,   KY_DQOT,    KY_QUOT,       TT(_NAS),   KC_RALT, \
-    KC_LCTRL,           F(0),      KC_Z,     KC_X,      KC_C,      KC_V,   KY_COMM,     KY_DOT,           F(1),  KC_RCTRL, \
+      KC_ESC,               KY_COLN,      KC_Q,     KC_W,      KC_B,      KC_M,      KC_U,       KC_Y,               KY_EXCL,   KC_BSPC, \
+      KC_TAB,               KY_SCOL,      KC_D,     KC_L,      KC_R,      KC_H,      KC_I,       KC_O,               KY_QUES,    KC_ENT, \
+     KC_LGUI,              TT(_ACT),      KC_T,     KC_F,      KC_S,      KC_N,      KC_A,       KC_E,              TT(_ACT),   KC_RGUI, \
+     KC_LALT,              TT(_NAS),      KC_K,     KC_P,      KC_J,      KC_G,   KY_DQOT,    KY_QUOT,              TT(_NAS),   KC_RALT, \
+    KC_LCTRL, MT(MOD_LSFT, KC_CAPS),      KC_Z,     KC_X,      KC_C,      KC_V,   KY_COMM,     KY_DOT, MT(MOD_RSFT, KC_CAPS),  KC_RCTRL, \
                                                          KC_SPC                                                            \
     ),
-    /*
-    [_BAC] = LAYOUT( // CAPS
-        KC_ESC,     S(KC_SCLN),   S(KC_Q),  S(KC_W),   S(KC_B),   S(KC_M),   S(KC_U),    S(KC_Y),        S(KC_1),   KC_BSPC, \
-        KC_TAB,        KC_SCLN,   S(KC_D),  S(KC_L),   S(KC_R),   S(KC_H),   S(KC_I),    S(KC_O),     S(KC_SLSH),    KC_ENT, \
-       KC_LGUI,        _______,   S(KC_T),  S(KC_F),   S(KC_S),   S(KC_N),   S(KC_A),    S(KC_E),       _______,   KC_RGUI, \
-       KC_LALT,        _______,   S(KC_K),  S(KC_P),   S(KC_J),   S(KC_G),S(KC_QUOT),    KC_QUOT,       _______,   KC_RALT, \
-      KC_LCTRL,        _______,   S(KC_Z),  S(KC_X),   S(KC_C),   S(KC_V),   KC_COMM,     KC_DOT,       _______,  KC_RCTRL, \
-                                                           KC_SPC                                                            \
-      ),
-      */
+
       [_NAS] = LAYOUT( /*Numbers and Symbols */
          _______,    S(KC_3),    KC_BSLS,  S(KC_GRV),     S(KC_6),   S(KC_7),   S(KC_4),   S(KC_5),  S(KC_BSLS),  _______, \
          _______,    S(KC_2), S(KC_LBRC), S(KC_RBRC),     KC_SLSH,      KC_7,      KC_8,      KC_9,  S(KC_MINS),  _______, \
@@ -142,14 +133,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _______,   TT(_SM1),    KC_LBRC,    KC_RBRC,   S(KC_EQL),      KC_0,    KC_EQL,    KC_DOT,    TT(_SM1),  _______, \
                                                             _______                                                        \
         ),
-        [_NAS] = LAYOUT( /*Numbers and Symbols */
-           _______,    S(KC_3),    KC_BSLS,  S(KC_GRV),     S(KC_6),   S(KC_7),   S(KC_4),   S(KC_5),  S(KC_BSLS),  _______, \
-           _______,    S(KC_2), S(KC_LBRC), S(KC_RBRC),     KC_SLSH,      KC_7,      KC_8,      KC_9,  S(KC_MINS),  _______, \
-           _______,    _______, S(KC_COMM),  S(KC_DOT),     S(KC_8),      KC_4,      KC_5,      KC_6,     _______,  _______, \
-           _______,    _______,    S(KC_9),    S(KC_0),     KC_MINS,      KC_1,      KC_2,      KC_3,     _______,  _______, \
-           _______,   TT(_SM1),    KC_LBRC,    KC_RBRC,   S(KC_EQL),      KC_0,    KC_EQL,   KC_PDOT,    TT(_SM1),  _______, \
-                                                              _______                                                        \
-          ),
         [_SM1] = LAYOUT( /*UNICODE (LOWER CASE) */
            _______,    UN_PLCR,   UN_INFI,      KC_GRV,     UN_DEGR,   UN_CENT,   UN_ACLU,   UN_ACLY,     UN_UPEX,  _______, \
            _______,    UN_SECT,   UN_MICR,     XXXXXXX,     UN_DIVI,   XXXXXXX,   UN_ACLI,   UN_ACLO,     UN_UPQU,  _______, \
@@ -221,11 +204,12 @@ void led_set_user(uint8_t usb_led) {
 
 
 
-
+/*
 const uint16_t PROGMEM fn_actions[] = {
     [0] = ACTION_MODS_TAP_KEY(MOD_LSFT, KC_CAPS),
     [1] = ACTION_MODS_TAP_KEY(MOD_RSFT, KC_CAPS)
 };
+*/
 
 void led_set_keymap(uint8_t usb_led) {
   if (!(usb_led & (1<<USB_LED_NUM_LOCK))) {

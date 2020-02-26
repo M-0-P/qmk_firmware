@@ -117,11 +117,11 @@ const uint32_t PROGMEM unicode_map[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BAS] = LAYOUT( /*  Base */
-      KC_ESC,      S(KC_SCLN),      KC_Q,     KC_W,      KC_B,      KC_M,      KC_U,       KC_Y,        S(KC_1),   KC_BSPC, \
-      KC_TAB,        KC_SCLN,      KC_D,     KC_L,      KC_R,      KC_H,      KC_I,       KC_O,     S(KC_SLSH),    KC_ENT, \
+      KC_ESC,        KY_COLN,      KC_Q,     KC_W,      KC_B,      KC_M,      KC_U,       KC_Y,        KY_EXCL,   KC_BSPC, \
+      KC_TAB,        KY_SCOL,      KC_D,     KC_L,      KC_R,      KC_H,      KC_I,       KC_O,        KY_QUES,    KC_ENT, \
      KC_LGUI,       TT(_ACT),      KC_T,     KC_F,      KC_S,      KC_N,      KC_A,       KC_E,       TT(_ACT),   KC_RGUI, \
-     KC_LALT,       TT(_NAS),      KC_K,     KC_P,      KC_J,      KC_G,   KC_QUOT,    KC_QUOT,       TT(_NAS),   KC_RALT, \
-    KC_LCTRL,           F(0),      KC_Z,     KC_X,      KC_C,      KC_V,   KC_COMM,     KC_DOT,           F(1),  KC_RCTRL, \
+     KC_LALT,       TT(_NAS),      KC_K,     KC_P,      KC_J,      KC_G,   KY_DQOT,    KY_QUOT,       TT(_NAS),   KC_RALT, \
+    KC_LCTRL,           F(0),      KC_Z,     KC_X,      KC_C,      KC_V,   KY_COMM,     KY_DOT,           F(1),  KC_RCTRL, \
                                                          KC_SPC                                                            \
     ),
     /*
@@ -322,7 +322,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 
   uprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
 return true;
-  /*
+  
   switch (keycode) {
     case KY_DOT:
       if(record->event.pressed)
@@ -344,6 +344,7 @@ return true;
         else
         {
           register_code(KC_DOT);
+		  return false;
         }
       }
       else
@@ -354,6 +355,7 @@ return true;
             register_code(mod_pressed);
             mod_pressed = 0;
           }
+		  return false;
       }
     case KY_COMM:
       if(record->event.pressed)
@@ -375,6 +377,7 @@ return true;
         else
         {
           register_code(KC_COMM);
+		  return false;
         }
       }
       else
@@ -385,14 +388,225 @@ return true;
             register_code(mod_pressed);
             mod_pressed = 0;
           }
+		  return false;
         }
-
-
+    case KY_SCOL:
+      if(record->event.pressed)
+      {
+        if(keyboard_report->mods & MOD_BIT (KC_LSFT))
+        {
+          unregister_code(KC_LSFT);
+          register_code(KC_SCLN);
+          mod_pressed = KC_LSFT;
+          return false;
+        }
+        else if(keyboard_report->mods & MOD_BIT (KC_RSFT))
+        {
+          unregister_code(KC_RSFT);
+          register_code(KC_SCLN);
+          mod_pressed = KC_RSFT;
+          return false;
+        }
+        else
+        {
+          register_code(KC_SCLN);
+		  return false;
+        }
+      }
+      else
+      {
+          unregister_code(KC_SCLN);
+          if (mod_pressed != 0)
+          {
+            register_code(mod_pressed);
+            mod_pressed = 0;
+          }
+		  return false;
+        }
+    case KY_QUOT:
+      if(record->event.pressed)
+      {
+        if(keyboard_report->mods & MOD_BIT (KC_LSFT))
+        {
+          unregister_code(KC_LSFT);
+          register_code(KC_QUOT);
+          mod_pressed = KC_LSFT;
+          return false;
+        }
+        else if(keyboard_report->mods & MOD_BIT (KC_RSFT))
+        {
+          unregister_code(KC_RSFT);
+          register_code(KC_QUOT);
+          mod_pressed = KC_RSFT;
+          return false;
+        }
+        else
+        {
+          register_code(KC_QUOT);
+		  return false;
+        }
+      }
+      else
+      {
+          unregister_code(KC_QUOT);
+          if (mod_pressed != 0)
+          {
+            register_code(mod_pressed);
+            mod_pressed = 0;
+          }
+		  return false;
+        }
+    case KY_DQOT:
+      if(record->event.pressed)
+      {
+        if((keyboard_report->mods & MOD_BIT (KC_LSFT)) || (keyboard_report->mods & MOD_BIT (KC_RSFT)))
+        {
+          register_code(KC_QUOT);
+          return false;
+        }
+        else
+        {
+		  register_code(KC_LSFT);
+          register_code(KC_QUOT);
+		  mod_pressed = KC_LSFT;
+		  return false; 
+        }
+      }
+      else
+      {
+          unregister_code(KC_QUOT);
+          if (mod_pressed != 0)
+          {
+            unregister_code(mod_pressed);
+            mod_pressed = 0;
+          }
+		  return false;
+      }
+	case KY_SCOL:
+      if(record->event.pressed)
+      {
+        if((keyboard_report->mods & MOD_BIT (KC_LSFT)) || (keyboard_report->mods & MOD_BIT (KC_RSFT)))
+        {
+          register_code(KC_SCLN);
+          return false;
+        }
+        else
+        {
+		  register_code(KC_LSFT);
+          register_code(KC_SCLN);
+		  mod_pressed = KC_LSFT;
+		  return false; 
+        }
+      }
+      else
+      {
+          unregister_code(KC_SCLN);
+          if (mod_pressed != 0)
+          {
+            unregister_code(mod_pressed);
+            mod_pressed = 0;
+          }
+		  return false;
+      }	
+	case KY_EXCL:
+      if(record->event.pressed)
+      {
+        if((keyboard_report->mods & MOD_BIT (KC_LSFT)) || (keyboard_report->mods & MOD_BIT (KC_RSFT)))
+        {
+          register_code(KC_1);
+          return false;
+        }
+        else
+        {
+		  register_code(KC_LSFT);
+          register_code(KC_1);
+		  mod_pressed = KC_LSFT;
+		  return false; 
+        }
+      }
+      else
+      {
+          unregister_code(KC_1);
+          if (mod_pressed != 0)
+          {
+            unregister_code(mod_pressed);
+            mod_pressed = 0;
+          }
+		  return false;
+      }	
+	  	  
+	case KY_QUES:
+      if(record->event.pressed)
+      {
+        if((keyboard_report->mods & MOD_BIT (KC_LSFT)) || (keyboard_report->mods & MOD_BIT (KC_RSFT)))
+        {
+          register_code(KC_SLSH);
+          return false;
+        }
+        else
+        {
+		  register_code(KC_LSFT);
+          register_code(KC_SLSH);
+		  mod_pressed = KC_LSFT;
+		  return false; 
+        }
+      }
+      else
+      {
+          unregister_code(KC_SLSH);
+          if (mod_pressed != 0)
+          {
+            unregister_code(mod_pressed);
+            mod_pressed = 0;
+          }
+		  return false;
+      }
+	case KEY_LCK:
+		if(record->event.pressed == 1) //Do nothing special on key down
+		{
+		  return true;
+		}
+		else //On key up, toggle on/off
+		{
+		  if(lock_active == true) //If lock is active then turn off
+		  {
+			EndLock(locked_key);
+			return false;
+		  }
+		  else //if lock off, turn on
+		  {
+			BeginLock();
+			return false;
+		  }
+		}
     default:
-       return true;
+		if(lock_active == true) //Lock is active, need to execute steps that don't involve lock key
+		{
+			if(lock_searching == true && keycode <0xFF && record->event.pressed == 0 )
+			//Lock key pressed, which turned on search.  Key needs to be valid.  On key up, set as locked key
+			{
+				LockKey(keycode);
+
+				return false;
+			}
+			else if (lock_searching == false && keycode == locked_key) //if the key has already been set, ignore the button press
+			{
+			  return false;
+			}
+			//if searching is false or its a quantum key, then continie on.
+				 //if the locked key has already been set, a normal button push will add to the effect
+			else
+			{
+			  return true;
+			}
+	  }
+	  else //Non-lock related keypresses
+	  {
+		return true;
+	  }
 
   }
-*/
+
 /*
   if(keycode == KEY_LCK) // lock key is pressed.
   {

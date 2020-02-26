@@ -16,4 +16,7 @@
 
 #pragma once
 
+
+#define TAPPING_TOGGLE 1
+#define TAPPING_TERM 150
 // place overrides here
